@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html ng-app="drag-and-drop">
+  <head lang="en">
+    <meta charset="utf-8">
+    <title>taskMan</title>
+    <script src="resource/js/jquery.min.js"></script>
+    <script src="resource/js/jquery-ui.min.js"></script>
+    <script src="resource/js/angular.min.js"></script>
+  <link rel="stylesheet" href="resource/css/angular-dragdrop.min.css">
+  <script src="resource/js/jquery-1.12.4.js"></script>
+  <script src="resource/js/jquery-ui.js"></script>
+    <link href="resource/css/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+    <link href="resource/css/bootstrap.min.css" rel="stylesheet">
+    <script src="resource/js/angular-dragdrop.min.js"></script>
+    <script src="resource/js/app.js"></script>
+   
+     <script>
+  $( function() {
+    $('#datepicker').datepicker({
+     dateFormat: 'yy-m-d',
+    inline: false,
+    onSelect: function(dateText, inst) { 
+        var date = $(this).datepicker('getDate'),
+            day  = date.getDate(),  
+            month = date.getMonth() + 1,              
+            year =  date.getFullYear();
+
+        
+        alert(document.getElementById("datepicker2").value);
+    }
+});
+    
+  } );
+  </script>
+  </head>
+  <body>
+
+   <div ng-controller="oneCtrl">
+    
+      <div class='contentWrapper ng-cloak'>
+        <div class='content'>
+          <div class="row-fluid">
+
+
+            <ul class="thumbnails">
+
+            <li class="span2" style='margin-top:20px;margin-left:10px;'>
+            <button style=" display: inline;" class="btn btn-info btn-draggable" onclick="showForm()">Add NEW</button>
+              </li> 
+		<li class="span3" style='margin-left:10px;padding-left:50px;'>
+               
+                <div class="thumbnail" style="min-height: 50px;" data-drop="true" ng-model='list3' data-jqyoui-options="{accept:'.btn-draggable:not([ng-model=list3])'}"  jqyoui-droppable="{multiple:true}">
+                 <div style='color:red;'><img src="resource/img/trash.png" width="35" height="35"><div class="caption"></div>
+                    <div class="btn btn-info btn-draggable" ng-repeat="item in list3" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{revert: 'invalid'}" ng-model="list3" jqyoui-draggable="{index: {{$index}},animate:true}"><a ng-click="edit(item.title,item.deadline,item.desc,item.taskId)" style="color: white;" href=''><div style="font-size: 50%;display: inline-block;">{{item.title}}</a> {{item.deadline}}</div>
+                  </div>
+                </div>
+              </li>
+	<BR>
+              <li class="span32" style='margin-left:10px;'>
+               <H4>ACTIVE</H4>
+                
+                <div class="thumbnail" data-drop="true" ng-model='list1' data-jqyoui-options="{accept:'.btn-draggable:not([ng-model=list1])'}"  jqyoui-droppable="{multiple:true}">
+                  <div class="caption">
+                    <div class="btn btn-info btn-draggable" ng-repeat="item in list1" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{revert: 'invalid'}" ng-model="list1" jqyoui-draggable="{index: {{$index}},animate:true}"><a ng-click="edit(item.title,item.deadline,item.desc,item.taskId)" style="color: white;" href=''><div style="font-size: 80%;display: inline-block;">{{item.title}}</a>   {{item.deadline}}</div>
+                  </div>
+                </div>
+            
+             
+              <li class="span32" style='margin-left:10px;'>
+               <H4>ARCHIVE</H4>
+          
+                <div class="thumbnail" data-drop="true" ng-model='list2' data-jqyoui-options="{accept:'.btn-draggable:not([ng-model=list2])'}"  jqyoui-droppable="{multiple:true}">
+                  <div class="caption">
+                    <div class="btn btn-info btn-draggable" ng-repeat="item in list2" ng-show="item.title" data-drag="{{item.drag}}" data-jqyoui-options="{revert: 'invalid'}" ng-model="list2" jqyoui-draggable="{index: {{$index}},animate:true}"><a ng-click="edit(item.title,item.deadline,item.desc,item.taskId)" style="color: white;" href=''><div style="font-size: 80%;display: inline-block;">{{item.title}}</a> {{item.deadline}}</div></div>
+                  </div>
+                </div>
+              </li>
+             
+              
+             
+            </ul>
+          </div>
+           <div class='menu_left'>
+      <textarea class="textarea_small" ng-model="import"></textarea>
+      <a class="btn" ng-click="importContent()">Import</a>
+      </div>
+      <div class='menu_right'>
+        <a class="btn" ng-click="exportContent()">Export</a>
+         </div>
+         <div class='menu_left'>
+      <a class="btn" ng-click="help()">Help</a>
+      </div>
+        </div>
+      </div>
+
+
+   <div id="newForm" class="navbar-inner form">
+    
+       <form ng-submit="submit()">
+          
+               <H2>ADD</H2>
+               
+               <label>Title: </label><input class="formelement" type="text" ng-model="title" />
+                <label>Deadline: </label><input id="date" class="formelement fromdate" type="text" ng-model="deadline" />
+               <label>Body:</label><br /> <textarea class="textarea" ng-model="desc"></textarea>
+               
+           
+           
+                <input type="submit" id="submit" value="Save" />
+                 <a class="btn" ng-click="cancelNew()">Cancel</a>
+               
+              
+        </form>
+    </div>
+     <div id="editForm" class="navbar-inner form">
+    
+       <form ng-submit="commit()">
+          
+               <H4>EDIT</H4>
+               <label>Id:  </label><input ng-readonly="true" ng-model="taskId"></input>
+               <label>Title: </label><input id="title" class="formelement" type="text" ng-model="title" />
+               <label>Deadline: </label><input id="date" class="formelement" type="text" ng-model="deadline" />
+               <label>Body:</label> <textarea class="textarea" ng-model="desc"></textarea>
+               <label>Attachments:</label>
+             <a ng-href="{{link}}">Uploads </a>
+				<br /> 
+            <a ng-href="{{root}}">Root </a>
+				<br /> 
+             
+                <input type="submit" id="submit" value="Save" />
+                 <a class="btn" ng-click="cancelEdit()">Cancel</a>
+               </div>
+              
+        </form>
+    </div>
+    
+  </body>
+</html>
